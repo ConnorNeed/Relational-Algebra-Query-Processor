@@ -1,0 +1,62 @@
+Workers (EID, Name, Age, Dept) = {
+E1, John, 16, Meat
+E2, Larry, 68, Meat
+E3, Bob, 54, Meat
+E4, Connor, 20, Meat
+E5, Jen, 52, Produce
+E6, Alice, 87, Produce
+E7, Harry, 29, Produce
+E8, Juila, 20, Produce
+E9, Barry, 46, Grocery
+E10, Mark, 71, Grocery
+E11, Cindy, 62, Cash
+};
+
+Salary (EID, Pay) = {
+E1, 52000
+E2, 55000
+E3, 60000
+E4, 52000
+E5, 55000
+E7, 60000
+E8, 52000
+E9, 55000
+E10, 60000
+E11, 60000
+};
+
+Dept (DID, DName, Sales) = {
+    D1, Meat, 100000
+    D2, Produce, 115000
+    D3, Grocery, 95000
+    D4, Garden, 0
+};
+
+Managers (EID) = {
+E2
+E7
+E9
+E11
+};
+
+Find all the employees (IDs) with a Salary over 52000:
+select "Pay>52000"(Salary);
+
+Get the names of those high earning workers:
+select "Pay>52000"(iJoin "EID=Salary.EID"(Workers)(Salary));
+
+project "Name"(select "Pay>52000"(iJoin "EID=Salary.EID"(Workers)(Salary)));
+
+
+Get the list of Managers with their Depts and daily sales?
+lJoin "Dept=DName"(project "EID, Dept, Name"(iJoin "EID=Workers.EID"(Managers)(Workers)))(Dept);
+oJoin "Dept=DName"(project "EID, Dept, Name"(iJoin "EID=Workers.EID"(Managers)(Workers)))(Dept);
+
+Who gets a Salary?
+iJoin "EID=Workers.EID"(intersect (project "EID"(Workers))(project "EID"(Salary)))(Workers);
+
+Who Does not get a Salary?
+iJoin "EID=Workers.EID"(minus (project "EID"(Workers))(project "EID"(Salary)))(Workers);
+
+Who works in Produce or Meat?
+union (select "Dept==Produce"(Workers))(select "Dept==Meat"(Workers));
